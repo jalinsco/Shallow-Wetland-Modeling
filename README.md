@@ -10,14 +10,12 @@ The first manuscript, "Mapping Shallow Wetlands for Wildlife Conservation", outl
 The second manuscript, "Opportunistic Stopovers by Hudsonian Godwits Limosa haemaestica in a Midcontinental Agricultural Landscape," incorporates these and other predictions into habitat modeling for a migratory shorebird species.
 
 <br/>
-<br/>
 
 ## Repository contents
 
 - 'scripts/' contains python and R scripts for data processing
 - 'data/' contains analysis-ready tabular data and GIS vector files
 
-<br/>
 <br/>
 
 ## Scripts
@@ -32,13 +30,11 @@ The second manuscript, "Opportunistic Stopovers by Hudsonian Godwits Limosa haem
 	- '02_survival_models.R' fits a Cormack-Jolly-Seber survival models for godwits
 
 <br/>
-<br/>
 
 ## Acknowledgements
 
 Code development was supported by a NASA FINESST award (#21-Earth210-0404) and a University of Massachusetts Amherst Agricultural Experiment Station Grant (#MAS00592). 
 
-<br/>
 <br/>
 
 ## Contact
