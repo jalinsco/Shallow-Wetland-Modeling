@@ -1,0 +1,38 @@
+model {
+  # Priors
+  alpha_phi ~ dnorm(0, 1)
+  beta_phi ~ dnorm(0, 1)
+  alpha_p0 ~ dnorm(0, 0.01)
+
+  # survival
+  for (t in 1:(n_years-1)) {
+    logit(phi[t]) <- alpha_phi + beta_phi * drought[t]
+  }
+  
+  # detection
+  for (t in 1:n_years) { 
+    logit(p_avail[t]) <- alpha_p0
+    p[t] <- p_avail[t] * (1 - miss[t])
+  }
+  
+  # state + detected, conditioned on first encounter
+  for (i in 1:n_ind) {
+  
+    # alive at first encounter
+    z[i, first[i]] <- 1 
+
+    for (t in (first[i] + 1):n_years) {
+    
+      # state process
+      z[i, t] ~ dbern(z[i, t - 1] * phi[t - 1])
+      
+      # observation process
+      Y[i, t] ~ dbern(z[i, t] * p[t])
+      
+      # log-likelihood for WAIC/LOOIC
+      p_obs[i, t] <- z[i, t] * p[t]
+      log_lik[i, t] <- Y[i, t] * log(p_obs[i, t] + 1e-12) + (1 - Y[i, t]) * log(1 - p_obs[i, t] + 1e-12)
+    }
+    
+  }
+}

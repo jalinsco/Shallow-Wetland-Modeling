@@ -1,0 +1,40 @@
+model {
+  # survival
+  for (t in 1:(n_years-1)) {
+    alpha_phi[t] ~ dnorm(0, 0.01)         
+    logit(phi[t]) <- alpha_phi[t]
+  }
+
+  # detection
+  for (t in 1:n_years) {
+    alpha_p[t] ~ dnorm(0, 0.01)
+    logit(p_avail[t]) <- alpha_p[t]
+    p[t] <- p_avail[t] * (1 - miss[t])    
+  }
+
+  # monitor detection probability over surveyed years
+  sum_p <- sum(p_avail[] * (1 - miss[]))
+  n_svy <- sum(1 - miss[])
+  p_mean <- sum_p / n_svy
+
+  # state + detection process, conditioned on first encounter
+  for (i in 1:n_ind) {
+    z[i, first[i]] <- 1
+
+    for (t in (first[i] + 1):n_years) {
+  
+      # state process
+      z[i, t] ~ dbern(z[i, t - 1] * phi[t - 1])
+      
+      # observation process
+      Y[i, t] ~ dbern(z[i, t] * p[t])
+      
+      
+      # log-likelihood for WAIC/LOOIC
+      p_obs[i, t] <- z[i, t] * p[t]
+      log_lik[i, t] <- Y[i, t] * log(p_obs[i, t] + 1e-12) + (1 - Y[i, t]) * log(1 - p_obs[i, t] + 1e-12)
+      
+    }
+  }
+}
+
